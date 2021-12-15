@@ -6,7 +6,7 @@
 /*   By: tmartial <tmartial@student.19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:25:10 by tmartial          #+#    #+#             */
-/*   Updated: 2021/12/15 15:46:17 by tmartial         ###   ########.fr       */
+/*   Updated: 2021/12/15 15:58:02 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,8 @@ int main(int argc, char *argv[], char *env[])
 		path_init(&all_paths, cmd1[0]);
 		path_name = find_path(cmd1[0], all_paths);
 		fdin = open(argv[1], O_RDONLY);
-		fdout = open(argv[4], O_WRONLY, O_TRUNC);
+		fdout = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		
-		printf("hello");
 		dup2(fdin, STDIN);
 		dup2(fdout, STDOUT);
 		redir(cmd1, env, fdin, path_name);
@@ -65,7 +64,7 @@ void	redir (char **cmd, char **env, int fdin, char *path_name)
 	{
 		close(pipefd[1]);
 		dup2(pipefd[0], STDIN);
-		waitpid(pid, NULL, 0);
+		// waitpid(pid, NULL, 0);
 	}
 	else
 	{
@@ -80,24 +79,3 @@ void	redir (char **cmd, char **env, int fdin, char *path_name)
 		}
 	}
 }
-
-/* //if (execve(path_name, cmd1, env) == -1)
-		//perror("execve error");
-	
-	//dup2(file2, 1);
-	//dup2(file1, 0);
-	//close(file1);
-	// printf("%s\n",path_name);
-	if (pipe(fd) == -1)
-		return (1); //protection pipe
-	int pid1 = fork();
-	if (pid1 < 0)
-		return (2); //protection fork
-	
-	if (pid1 == 0) //child process
-	{
-		if (execve("/bin/ls", &argv[2], env) == -1)
-			perror("execve error");
-	}
-	
-	waitpid(pid1, NULL, 0);*/
