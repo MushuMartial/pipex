@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmartial <tmartial@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tmartial <tmartial@student.19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 10:10:50 by tmartial          #+#    #+#             */
-/*   Updated: 2021/12/14 11:17:28 by tmartial         ###   ########.fr       */
+/*   Updated: 2021/12/15 10:36:14 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,14 +65,4 @@ size_t	ft_strlen(const char *s)
 	while (s[len] != '\0')
 		len++;
 	return (len);
-}
-
-void path_init(t_paths *path, char *cmd)
-{
-	path->path1 = ft_strjoin("/usr/local/bin/", cmd);
-	path->path2 = ft_strjoin("/usr/bin/", cmd);
-	path->path3 = ft_strjoin("/bin/", cmd);
-	path->path4 = ft_strjoin("/usr/sbin/", cmd);
-	path->path5 = ft_strjoin("/sbin/", cmd);
-	path->path6 = ft_strjoin("/usr/local/munki/", cmd);
 }
