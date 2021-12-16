@@ -6,13 +6,13 @@
 /*   By: tmartial <tmartial@student.19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 10:35:34 by tmartial          #+#    #+#             */
-/*   Updated: 2021/12/15 17:30:52 by tmartial         ###   ########.fr       */
+/*   Updated: 2021/12/16 13:02:52 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	path_init(t_paths *path, char *cmd)
+int	path_init(t_paths *path, char *cmd)
 {
 	path->path1 = ft_strjoin("/usr/local/bin/", cmd);
 	path->path2 = ft_strjoin("/usr/bin/", cmd);
@@ -20,9 +20,13 @@ void	path_init(t_paths *path, char *cmd)
 	path->path4 = ft_strjoin("/usr/sbin/", cmd);
 	path->path5 = ft_strjoin("/sbin/", cmd);
 	path->path6 = ft_strjoin("/usr/local/munki/", cmd);
+	if (!path->path1 || !path->path2 || !path->path3
+		|| !path->path4 || !path->path5 || !path->path6)
+		return (1);
+	return (0);
 }
 
-char	*find_path(char *cmd, t_paths path)
+char	*find_path(t_paths path)
 {
 	if (access(path.path1, F_OK) == 0)
 		return (path.path1);

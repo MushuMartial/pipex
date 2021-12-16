@@ -1,6 +1,6 @@
 NAME = pipex
 
-SRCS = pipex.c
+SRCS = pipex.c split.c pipex_utils.c libft.c
 
 OBJS = $(SRCS:.c=.o)
 
