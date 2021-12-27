@@ -6,7 +6,7 @@
 /*   By: tmartial <tmartial@student.19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 09:54:54 by tmartial          #+#    #+#             */
-/*   Updated: 2021/12/16 10:06:04 by tmartial         ###   ########.fr       */
+/*   Updated: 2021/12/27 12:07:27 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,12 @@ static int	mal_len(char const *s, char c, int pos)
 	return (len);
 }
 
-static int	ft_free_all(char **split, int i)
+static int	ft_free_split(char **split, int i)
 {
 	if (split[i] == NULL)
 	{
 		while (i--)
 			free(split[i]);
-		free(split);
 		return (0);
 	}
 	else
@@ -88,7 +87,7 @@ char	**ft_split(char const *s, char c)
 		len = mal_len(s, c, pos);
 		pos = ad_pos(s, pos, c);
 		split[i++] = ft_substr(s, pos, len);
-		if (ft_free_all(split, i - 1) == 0)
+		if (ft_free_split(split, i - 1) == 0)
 			return (NULL);
 		pos += len;
 	}

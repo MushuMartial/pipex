@@ -6,20 +6,60 @@
 /*   By: tmartial <tmartial@student.19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:25:10 by tmartial          #+#    #+#             */
-/*   Updated: 2021/12/16 13:03:11 by tmartial         ###   ########.fr       */
+/*   Updated: 2021/12/27 15:56:03 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 //path PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki
-
+//2 = No such file or directory; 10 = No child processes; 
+//12 = Cannot allocate memory; 22 = Invalid argument;
+//32 = Broken pipe; 8 = Exec format error
 int	main(int argc, char *argv[], char *env[])
 {
 	if (argc == 5)
-		pipex(argv, env);
+		pipex1(argv, env);
 	else
-		perror("Invalid args");
+		perror(strerror(22));
 	return (0);
+}
+
+void	free_path(t_paths *paths)
+{
+	if (paths->path1 != NULL)
+		free(paths->path1);
+	if (paths->path2 != NULL)
+		free(paths->path2);
+	if (paths->path3 != NULL)
+		free(paths->path3);
+	if (paths->path4 != NULL)
+		free(paths->path4);
+	if (paths->path5 != NULL)
+		free(paths->path5);
+	if (paths->path6 != NULL)
+		free(paths->path6);
+}
+
+void	free_all(t_data	*data, t_paths *paths, int msg)
+{
+	int	i;
+	
+	i = -1;
+	if (data->cmd[0] != NULL)
+	{
+		while (data->cmd[++i] != NULL)
+			free(data->cmd[i]);
+	}
+	free(data->cmd);
+	if (data->path_name)
+		free(data->path_name);
+	free_path(paths);
+	system("leaks pipex");
+	if (msg != 0)
+	{
+		perror(strerror(msg));
+		exit(0);
+	}
 }
 
 char	**find_cmd(char *argv[], int arg)
@@ -30,38 +70,40 @@ char	**find_cmd(char *argv[], int arg)
 	return (cmd);
 }
 
-int	pipex(char *argv[], char *env[])
+int	pipex1(char *argv[], char *env[])
 {
-	int		file1;
-	int		file2;
-	char	**cmd;
-	char	*path_name;
-	t_paths	all_paths;
+	t_data	data;
+	t_paths	paths;
 
-	cmd = find_cmd(argv, 2);
-	if (cmd == NULL)
-		perror("malloc error");
-	if (path_init(&all_paths, cmd[0]) == 1)
-		perror("malloc error");
-	path_name = find_path(all_paths);
-	if (path_name == NULL)
-		perror("cmd doesnt exist");
-	file1 = open(argv[1], O_RDONLY);
+	data.cmd = find_cmd(argv, 2);
+	if (path_init(&paths, data.cmd[0]) == 1)
+		free_all(&data, &paths, 12);
+	data.path_name = find_path(paths);
+	if (data.path_name == NULL)
+		free_all(&data, &paths, 22);
+	data.file = open(argv[1], O_RDONLY);
 	if (access(argv[1], F_OK) != 0)
-		perror("file doesnt exist");
-	file2 = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	dup2(file1, STDIN_FILENO);
-	dup2(file2, STDOUT_FILENO);
-	exec1(cmd, env, file1, path_name);
-	cmd = find_cmd(argv, 3);
-	path_init(&all_paths, cmd[0]);
-	path_name = find_path(all_paths);
-	if (execve(path_name, cmd, env) == -1)
-		perror("execve error");
+		free_all(&data, &paths, 2);
+	dup2(data.file, STDIN_FILENO);
+	exec1(env, data);
+	pipex2(argv, env, &paths, &data);
 	return (0);
 }
 
-void	exec1(char **cmd, char **env, int file, char *path_name)
+int	pipex2(char *argv[], char *env[], t_paths *paths, t_data *data)
+{
+	data->file = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	dup2(data->file, STDOUT_FILENO);
+	data->cmd = find_cmd(argv, 3);
+	path_init(paths, data->cmd[0]);
+	data->path_name = find_path(*paths);
+	system("leaks pipex");
+	//if (execve(data->path_name, data->cmd, env) == -1)
+		//perror("execve error");
+	return (0);
+}
+
+void	exec1(char **env, t_data data)
 {
 	pid_t	pid;
 	int		pipefd[2];
@@ -77,11 +119,11 @@ void	exec1(char **cmd, char **env, int file, char *path_name)
 	{
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
-		if (file == 0)
+		if (data.file == 0)
 			exit(1);
 		else
 		{
-			if (execve(path_name, cmd, env) == -1)
+			if (execve(data.path_name, data.cmd, env) == -1)
 				perror("execve error");
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: tmartial <tmartial@student.19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 13:59:29 by tmartial          #+#    #+#             */
-/*   Updated: 2021/12/16 13:03:16 by tmartial         ###   ########.fr       */
+/*   Updated: 2021/12/23 16:07:41 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,12 @@ typedef struct s_paths {
 	char	*path6;
 }	t_paths;
 
+typedef struct s_data {
+	int		file;
+	char	**cmd;
+	char	*path_name;
+}	t_data;
+
 /* libft */
 char		*ft_strdup(const char *s1);
 size_t		ft_strlen(const char *s);
@@ -44,9 +50,10 @@ char		*ft_substr(char const *s, unsigned int start, size_t len);
 char		**ft_split(char const *s, char c);
 
 /* main */
-int			pipex(char *argv[], char *env[]);
-void		exec1(char **cmd, char **env, int fdin, char *path_name);
+int			pipex1(char *argv[], char *env[]);
+void		exec1(char **env, t_data data);
 char		**find_cmd(char *argv[], int arg);
+int			pipex2(char *argv[], char *env[], t_paths *paths, t_data *data);
 
 /* utils */
 int			path_init(t_paths *path, char *cmd);
