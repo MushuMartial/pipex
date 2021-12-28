@@ -6,7 +6,7 @@
 /*   By: tmartial <tmartial@student.19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:25:10 by tmartial          #+#    #+#             */
-/*   Updated: 2021/12/28 13:15:16 by tmartial         ###   ########.fr       */
+/*   Updated: 2021/12/28 13:41:13 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,23 +21,20 @@ int	main(int argc, char *argv[], char *env[])
 		pipex1(argv, env);
 	else
 		perror(strerror(22));
+	system("leaks pipex");
 	return (0);
 }
 
 void	free_path(t_paths *paths)
 {
-	if (paths->path1 != NULL)
-		free(paths->path1);
-	if (paths->path2 != NULL)
-		free(paths->path2);
-	//if (paths->path3 != NULL)
-		//free(paths->path3);
-	if (paths->path4 != NULL)
-		free(paths->path4);
-	if (paths->path5 != NULL)
-		free(paths->path5);
-	if (paths->path6 != NULL)
-		free(paths->path6);
+	free(paths->path1);
+	free(paths->path2);
+	write(1,"g\n",2);
+	//free(paths->path3);
+	write(1,"g\n",2);
+	free(paths->path4);
+	free(paths->path5);
+	free(paths->path6);
 }
 
 void	free_all(t_data	*data, t_paths *paths, int msg)
@@ -55,12 +52,12 @@ void	free_all(t_data	*data, t_paths *paths, int msg)
 	if (data->path_name)
 		free(data->path_name);
 	free_path(paths);
-	//system("leaks pipex");
 	if (msg != 0)
 	{
 		perror(strerror(msg));
-		exit(0);
+		//exit(0);
 	}
+	return;
 }
 
 char	**find_cmd(char *argv[], int arg)
@@ -84,11 +81,15 @@ int	pipex1(char *argv[], char *env[])
 		free_all(&data, &paths, 22);
 	data.file = open(argv[1], O_RDONLY);
 	if (access(argv[1], F_OK) != 0)
+	{	
 		free_all(&data, &paths, 37);
+		printf("hdfhdfhfdh\n");
+		return (0);
+	}
 	dup2(data.file, STDIN_FILENO);
 	exec1(env, &data, &paths);
 	//free_all(&data, &paths, 12);
-	//pipex2(argv, env, &paths, &data);
+	pipex2(argv, env, &paths, &data);
 	return (0);
 }
 
