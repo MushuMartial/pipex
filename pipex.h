@@ -6,7 +6,7 @@
 /*   By: tmartial <tmartial@student.19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 13:59:29 by tmartial          #+#    #+#             */
-/*   Updated: 2021/12/23 16:07:41 by tmartial         ###   ########.fr       */
+/*   Updated: 2021/12/28 11:31:03 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char		**ft_split(char const *s, char c);
 
 /* main */
 int			pipex1(char *argv[], char *env[]);
-void		exec1(char **env, t_data data);
+void	exec1(char **env, t_data *data, t_paths *paths);
 char		**find_cmd(char *argv[], int arg);
 int			pipex2(char *argv[], char *env[], t_paths *paths, t_data *data);
 

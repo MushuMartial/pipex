@@ -6,7 +6,7 @@
 /*   By: tmartial <tmartial@student.19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:25:10 by tmartial          #+#    #+#             */
-/*   Updated: 2021/12/27 15:56:03 by tmartial         ###   ########.fr       */
+/*   Updated: 2021/12/28 13:15:16 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ void	free_path(t_paths *paths)
 		free(paths->path1);
 	if (paths->path2 != NULL)
 		free(paths->path2);
-	if (paths->path3 != NULL)
-		free(paths->path3);
+	//if (paths->path3 != NULL)
+		//free(paths->path3);
 	if (paths->path4 != NULL)
 		free(paths->path4);
 	if (paths->path5 != NULL)
@@ -50,11 +50,12 @@ void	free_all(t_data	*data, t_paths *paths, int msg)
 		while (data->cmd[++i] != NULL)
 			free(data->cmd[i]);
 	}
-	free(data->cmd);
+	if (msg != 0)
+		free(data->cmd);
 	if (data->path_name)
 		free(data->path_name);
 	free_path(paths);
-	system("leaks pipex");
+	//system("leaks pipex");
 	if (msg != 0)
 	{
 		perror(strerror(msg));
@@ -83,10 +84,11 @@ int	pipex1(char *argv[], char *env[])
 		free_all(&data, &paths, 22);
 	data.file = open(argv[1], O_RDONLY);
 	if (access(argv[1], F_OK) != 0)
-		free_all(&data, &paths, 2);
+		free_all(&data, &paths, 37);
 	dup2(data.file, STDIN_FILENO);
-	exec1(env, data);
-	pipex2(argv, env, &paths, &data);
+	exec1(env, &data, &paths);
+	//free_all(&data, &paths, 12);
+	//pipex2(argv, env, &paths, &data);
 	return (0);
 }
 
@@ -97,13 +99,12 @@ int	pipex2(char *argv[], char *env[], t_paths *paths, t_data *data)
 	data->cmd = find_cmd(argv, 3);
 	path_init(paths, data->cmd[0]);
 	data->path_name = find_path(*paths);
-	system("leaks pipex");
-	//if (execve(data->path_name, data->cmd, env) == -1)
-		//perror("execve error");
+	if (execve(data->path_name, data->cmd, env) == -1)
+		free_all(data, paths, 8);
 	return (0);
 }
 
-void	exec1(char **env, t_data data)
+void	exec1(char **env, t_data *data, t_paths *paths)
 {
 	pid_t	pid;
 	int		pipefd[2];
@@ -119,12 +120,12 @@ void	exec1(char **env, t_data data)
 	{
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
-		if (data.file == 0)
-			exit(1);
+		if (data->file == 0)
+			free_all(data, paths, 12);
 		else
 		{
-			if (execve(data.path_name, data.cmd, env) == -1)
-				perror("execve error");
+			if (execve(data->path_name, data->cmd, env) == -1)
+				free_all(data, paths, 8);
 		}
 	}
 }
