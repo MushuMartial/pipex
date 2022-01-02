@@ -6,7 +6,7 @@
 /*   By: tmartial <tmartial@student.19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 13:59:29 by tmartial          #+#    #+#             */
-/*   Updated: 2021/12/28 11:31:03 by tmartial         ###   ########.fr       */
+/*   Updated: 2022/01/02 15:55:19 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,18 @@ char		*ft_strjoin(char const *s1, char const *s2);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
 
 /* split */
-//static int	tab_len(char const *s, char c);
-//static int	mal_len(char const *s, char c, int pos);
-//static int	ft_free_all(char **split, int i); //free tableau de char
-//static int	ad_pos(const char *s, int pos, char c);
 char		**ft_split(char const *s, char c);
 
 /* main */
-int			pipex1(char *argv[], char *env[]);
-void	exec1(char **env, t_data *data, t_paths *paths);
-char		**find_cmd(char *argv[], int arg);
-int			pipex2(char *argv[], char *env[], t_paths *paths, t_data *data);
+void		pipex1(char *argv[], char *env[]);
+void		exec1(char **env, t_data *data, t_paths *paths);
+void		pipex2(char *argv[], char *env[], t_paths *paths, t_data *data);
 
 /* utils */
 int			path_init(t_paths *path, char *cmd);
 char		*find_path(t_paths path);
+void		free_path(t_paths *paths);
+char		**find_cmd(char *argv[], int arg);
+void		free_all(t_data	*data, t_paths *paths, int msg);
 
 #endif

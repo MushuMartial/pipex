@@ -7,10 +7,10 @@ OBJS = $(SRCS:.c=.o)
 CC		= gcc
 RM		= rm -f
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS)  -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS)  -o $(NAME) 
 
 all:	$(NAME)
 
