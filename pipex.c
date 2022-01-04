@@ -6,7 +6,7 @@
 /*   By: tmartial <tmartial@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:25:10 by tmartial          #+#    #+#             */
-/*   Updated: 2022/01/03 10:20:50 by tmartial         ###   ########.fr       */
+/*   Updated: 2022/01/03 15:44:19 by tmartial         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,11 @@ void	exec1(char **env, t_data *data, t_paths *paths)
 	pid_t	pid;
 	int		pipefd[2];
 
-	pipe(pipefd);
+	if (pipe(pipefd) == -1)
+		free_all(data, paths, 32);
 	pid = fork();
+	if (pid < 0)
+		free_all(data, paths, 12);
 	if (pid)
 	{
 		close(pipefd[1]);
